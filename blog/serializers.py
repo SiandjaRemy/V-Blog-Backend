@@ -44,6 +44,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ["id", "title", "content", "category", "image", "created_at"]
 
+    # Overwrite the create method to add the author to validated data for post
     def create(self, validated_data):
         user = self.context["user"]
 
@@ -55,4 +56,8 @@ class CreatePostSerializer(serializers.ModelSerializer):
 class SubscriberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscriber
-        fields = "__all__"
+        fields = ["id", "email", "ip_address"]
+
+    
+
+

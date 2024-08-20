@@ -54,11 +54,19 @@ class CommentModelViewset(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_context(self):
+        user = self.request.user
+        context = {
+            "user": user,
+        }
+        return context
 
 class SubscriberModelViewset(viewsets.ModelViewSet):
     serializer_class = SubscriberSerializer
     queryset = Subscriber.objects.all()
     pagination_class = PageNumberPagination
     permission_classes = [AllowAny]
+
+
 
 
