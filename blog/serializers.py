@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from .models import Comment, Post, Reaction, Subscriber, Category
+from .models import Comment, MoviePost, Reaction, Subscriber, Category
 
 User = get_user_model()
 
@@ -24,6 +24,13 @@ class ReactionSerializer(serializers.ModelSerializer):
         model = Reaction
         fields = ["ip_address", "type", "created_at"]
 
+    
+    def create(self, validated_data):
+        post_id = self.context["post_id"]
+        post = MoviePost.objects.only("id").filter(id=post_id).first()
+        validated_data["post"] = post
+        return super().create(validated_data)
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = SimpleUserSerializer(many=False)
@@ -32,17 +39,17 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ["author", "content", "created_at"]
 
 
-class PostSerializer(serializers.ModelSerializer):
+class MoviePostSerializer(serializers.ModelSerializer):
     author = SimpleUserSerializer(many=False)
     class Meta:
-        model = Post
-        fields = ["id", "title", "content", "category", "image", "created_at"]
+        model = MoviePost
+        fields = ["id", "author", "movie_name", "synopsis", "category", "my_review", "image", "gif", "image_url", "gif_url", "created_at"]
 
 
-class CreatePostSerializer(serializers.ModelSerializer):
+class CreateMoviePostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post
-        fields = ["id", "title", "content", "category", "image", "created_at"]
+        model = MoviePost
+        fields = ["id", "movie_name", "synopsis", "category", "my_review", "image", "gif", "created_at"]
 
     # Overwrite the create method to add the author to validated data for post
     def create(self, validated_data):

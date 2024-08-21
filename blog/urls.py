@@ -6,11 +6,11 @@ from . import views
 
 router = routers.DefaultRouter()
 
-router.register("posts", views.PostModelViewset, basename="posts")
+router.register("post", views.MoviePostModelViewset, basename="post")
 router.register("category", views.CategoryGenericViewset, basename="category")
 router.register("subscriber", views.SubscriberModelViewset, basename="subscriber")
 
-post_router = routers.NestedDefaultRouter(router, "posts", lookup="posts")
+post_router = routers.NestedDefaultRouter(router, "post", lookup="post")
 post_router.register("comments", views.CommentModelViewset, basename="comments")
 post_router.register("reactions", views.ReactionGenericViewset, basename="reactions")
 

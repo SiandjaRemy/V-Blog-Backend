@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'accounts',
     'blog',
 
-
+    "corsheaders", # Cors header
     'drf_yasg',
     'rest_framework',
     "djoser",
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware", # Debug toolbar
+    "corsheaders.middleware.CorsMiddleware", # Cors Header
 
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -75,6 +76,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "BlogApi.urls"
 
+CORS_ALLOWED_ORIGINS = [
+       "http://localhost:3000",  # Allow your React app's origin 
+       # Add other allowed origins if needed
+]
 
 
 REST_FRAMEWORK = {

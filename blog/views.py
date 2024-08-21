@@ -7,8 +7,8 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 
 from django.shortcuts import render
 
-from .models import Reaction, Category, Post, Comment, Subscriber
-from .serializers import CreatePostSerializer, ReactionSerializer, PostSerializer, CommentSerializer, CategorySerializer, SubscriberSerializer
+from .models import Reaction, Category, MoviePost, Comment, Subscriber
+from .serializers import CreateMoviePostSerializer, ReactionSerializer, MoviePostSerializer, CommentSerializer, CategorySerializer, SubscriberSerializer
 # Create your views here.
 
 
@@ -19,9 +19,9 @@ class CategoryGenericViewset(viewsets.GenericViewSet, ListModelMixin, RetrieveMo
     permission_classes = [AllowAny]
 
 
-class PostModelViewset(viewsets.ModelViewSet):
+class MoviePostModelViewset(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "put", "delete"]
-    queryset = Post.objects.all()
+    queryset = MoviePost.objects.all()
     pagination_class = PageNumberPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
@@ -35,10 +35,10 @@ class PostModelViewset(viewsets.ModelViewSet):
     
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return CreatePostSerializer
+            return CreateMoviePostSerializer
         elif self.request.method == "PUT":
-            return CreatePostSerializer
-        return PostSerializer
+            return CreateMoviePostSerializer
+        return MoviePostSerializer
 
 
 class ReactionGenericViewset(viewsets.GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixin):
@@ -47,6 +47,14 @@ class ReactionGenericViewset(viewsets.GenericViewSet, ListModelMixin, CreateMode
     pagination_class = PageNumberPagination
     permission_classes = [AllowAny]
 
+    def get_serializer_context(self):
+        user = self.request.user
+        post_id = self.kwargs.get("post_pk")
+        context = {
+            "user": user,
+            "post_id": post_id,
+        }
+        return context
 
 class CommentModelViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
