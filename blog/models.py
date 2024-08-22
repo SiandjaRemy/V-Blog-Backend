@@ -52,9 +52,12 @@ class Reaction(models.Model):
     type = models.CharField(max_length=50, choices=Type.choices, default=Type.LIKE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created_at"]
 
 class Comment(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
+    post = models.ForeignKey(MoviePost, related_name="comments", on_delete=models.CASCADE, null=True)
     author = models.ForeignKey(User, related_name="comments", null=True, blank=True, on_delete=models.SET_NULL)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

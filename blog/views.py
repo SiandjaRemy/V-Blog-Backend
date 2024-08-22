@@ -8,7 +8,7 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from django.shortcuts import render
 
 from .models import Reaction, Category, MoviePost, Comment, Subscriber
-from .serializers import CreateMoviePostSerializer, ReactionSerializer, MoviePostSerializer, CommentSerializer, CategorySerializer, SubscriberSerializer
+from .serializers import CreateMoviePostSerializer, CreateReactionSerializer, ReactionSerializer, MoviePostSerializer, CommentSerializer, CategorySerializer, SubscriberSerializer
 # Create your views here.
 
 
@@ -44,7 +44,7 @@ class MoviePostModelViewset(viewsets.ModelViewSet):
 class ReactionGenericViewset(viewsets.GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixin):
     serializer_class = ReactionSerializer
     queryset = Reaction.objects.all()
-    pagination_class = PageNumberPagination
+    pagination_class = None
     permission_classes = [AllowAny]
 
     def get_serializer_context(self):
@@ -55,11 +55,16 @@ class ReactionGenericViewset(viewsets.GenericViewSet, ListModelMixin, CreateMode
             "post_id": post_id,
         }
         return context
+    
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateReactionSerializer
+        return ReactionSerializer
 
 class CommentModelViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    pagination_class = PageNumberPagination
+    pagination_class = None
     permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
